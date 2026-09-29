@@ -1,0 +1,191 @@
+{
+ "config": {
+  "use_lagged_targets": false,
+  "lags": [
+   1,
+   2,
+   3,
+   5
+  ],
+  "windows": [
+   5,
+   20
+  ],
+  "max_missing": 0.3,
+  "z_clip": 10.0,
+  "n_folds": 6,
+  "test_size": 504,
+  "val_size": 252,
+  "cal_size": 252,
+  "gap": 5,
+  "models": [
+   "logreg",
+   "gru",
+   "attn_gru",
+   "mlp"
+  ],
+  "seq_len": 20,
+  "hidden": 64,
+  "layers": 2,
+  "dropout": 0.3,
+  "mlp_hidden": [
+   256,
+   128,
+   64
+  ],
+  "logreg_c": 0.01,
+  "seeds": [
+   0,
+   1,
+   2
+  ],
+  "batch_size": 128,
+  "lr": 0.001,
+  "weight_decay": 0.0001,
+  "max_epochs": 40,
+  "patience": 6,
+  "threads": 2,
+  "percentiles": [
+   25,
+   50,
+   75
+  ],
+  "leverages": [
+   0.0,
+   0.6,
+   1.2,
+   1.8
+  ],
+  "tune_trials": 500,
+  "null_draws": 200,
+  "window_days": 126
+ },
+ "folds": [
+  {
+   "fold": 0,
+   "n_features": 79,
+   "train_date_ids": [
+    19,
+    5504
+   ],
+   "val_date_ids": [
+    5510,
+    5761
+   ],
+   "cal_date_ids": [
+    5767,
+    6018
+   ],
+   "test_date_ids": [
+    6024,
+    6527
+   ]
+  },
+  {
+   "fold": 1,
+   "n_features": 81,
+   "train_date_ids": [
+    19,
+    6008
+   ],
+   "val_date_ids": [
+    6014,
+    6265
+   ],
+   "cal_date_ids": [
+    6271,
+    6522
+   ],
+   "test_date_ids": [
+    6528,
+    7031
+   ]
+  },
+  {
+   "fold": 2,
+   "n_features": 81,
+   "train_date_ids": [
+    19,
+    6512
+   ],
+   "val_date_ids": [
+    6518,
+    6769
+   ],
+   "cal_date_ids": [
+    6775,
+    7026
+   ],
+   "test_date_ids": [
+    7032,
+    7535
+   ]
+  },
+  {
+   "fold": 3,
+   "n_features": 82,
+   "train_date_ids": [
+    19,
+    7016
+   ],
+   "val_date_ids": [
+    7022,
+    7273
+   ],
+   "cal_date_ids": [
+    7279,
+    7530
+   ],
+   "test_date_ids": [
+    7536,
+    8039
+   ]
+  },
+  {
+   "fold": 4,
+   "n_features": 82,
+   "train_date_ids": [
+    19,
+    7520
+   ],
+   "val_date_ids": [
+    7526,
+    7777
+   ],
+   "cal_date_ids": [
+    7783,
+    8034
+   ],
+   "test_date_ids": [
+    8040,
+    8543
+   ]
+  },
+  {
+   "fold": 5,
+   "n_features": 82,
+   "train_date_ids": [
+    19,
+    8024
+   ],
+   "val_date_ids": [
+    8030,
+    8281
+   ],
+   "cal_date_ids": [
+    8287,
+    8538
+   ],
+   "test_date_ids": [
+    8544,
+    9047
+   ]
+  }
+ ],
+ "runtime_min": 24.8,
+ "python": "3.12.13",
+ "torch": "2.4.1+cu121",
+ "machine": "x86_64",
+ "device": "cpu",
+ "threads": 2
+}

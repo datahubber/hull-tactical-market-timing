@@ -1,0 +1,11 @@
+# Pinned top-level versions used for the run in results/ (Python 3.12.13, Linux x86_64, CPU only,
+# 2 threads). Transitive dependencies are not pinned. `pip install -e ".[dev]"` with the ranges
+# in pyproject.toml is enough for the tests; `make data` also needs `pip install kaggle`.
+matplotlib==3.11.2
+numpy==2.5.3
+pandas==3.0.5
+pytest==9.1.1
+pyyaml==6.0.3
+ruff==0.16.9
+scikit-learn==1.9.0
+torch==2.4.1

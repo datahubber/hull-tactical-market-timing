@@ -1,0 +1,16 @@
+# environments and caches
+.venv/
+__pycache__/
+*.egg-info/
+build/
+.pytest_cache/
+.ruff_cache/
+.DS_Store
+.env
+
+# competition data never goes into git
+data/
+*.zip
+train.csv
+test.csv
+kaggle_evaluation/

@@ -1,0 +1,35 @@
+# Ablation: identical to default.yaml but without the lagged-target features.
+# Six 2-year test blocks cover the last 3,024 trading days of train.csv.
+use_lagged_targets: false
+lags: [1, 2, 3, 5]
+windows: [5, 20]
+max_missing: 0.3
+z_clip: 10.0
+
+n_folds: 6
+test_size: 504
+val_size: 252
+cal_size: 252
+gap: 5
+
+models: [logreg, gru, attn_gru, mlp]
+seq_len: 20
+hidden: 64
+layers: 2
+dropout: 0.3
+mlp_hidden: [256, 128, 64]
+logreg_c: 0.01
+
+seeds: [0, 1, 2]
+batch_size: 128
+lr: 0.001
+weight_decay: 0.0001
+max_epochs: 40
+patience: 6
+threads: 2
+
+percentiles: [25, 50, 75]
+leverages: [0.0, 0.6, 1.2, 1.8]
+tune_trials: 500
+null_draws: 200
+window_days: 126
