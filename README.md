@@ -1,7 +1,8 @@
 # Hull Tactical market timing (Kaggle bronze, top 10%)
 
 Solo bronze in [Hull Tactical - Market Prediction](https://www.kaggle.com/competitions/hull-tactical-market-prediction):
-rank 366 of 3,677 teams, private leaderboard **1.699**. My entry set a daily 0-2x position in the
+rank 366 of 3,677 teams, private leaderboard **1.699**, against about 0.94 for buy-and-hold on
+the same live window. My entry set a daily 0-2x position in the
 S&P 500 from small GRU, attention-GRU and MLP direction classifiers. This repo rebuilds it as a
 tested package with a purged walk-forward evaluation, no-lookahead tests and the host's exact
 metric, and uses it to measure how much of a market-timing score is skill, market regime and
@@ -25,6 +26,9 @@ Hollow: tuned and scored on the calibration block. Filled: the same rule on the 
   rule (p >= 0.49 -> 1.2x, else flat) or through percentile tiers (0 / 0.6 / 1.2 / 1.8x)
   calibrated on a held-out block.
 - **Findings.**
+  - On the live leaderboard window the entry scored 1.699; buy-and-hold, rebuilt from public
+    prices and scored with the same metric, scores 0.94 (0.94-1.40 depending on the unpublished
+    last scored day).
   - The submitted rule holds up out of sample: 0.84 ± 0.54 over six walk-forward blocks, ahead
     of buy-and-hold in 4 of 6, and ahead of holding 1.2x every day in 4 of 6. Its edge comes
     from the days it steps aside, not from leverage.
@@ -52,6 +56,34 @@ scored between -0.40 and 3.59 along the way (interim scores as listed in my subm
 |---|---|---|---|---|---|---|
 | ensemble (`aa1fc409de`) | 3.589 | 1.688 | -0.403 | 0.753 | 1.378 | 1.699 |
 | attention-GRU (`cf19501c3d`) | 2.431 | 0.517 | -0.360 | 1.924 | 0.922 | 1.613 |
+| buy-and-hold, rebuilt (see below) | -0.214 | 0.413 | -1.596 | 0.837 | 1.389 | 0.941 |
+
+### Buy-and-hold on the live window
+
+The host never released the live returns, so `hull-timing live-baseline`
+([live.py](src/hull_timing/live.py)) rebuilds them from public data and checks the rebuild
+against train.csv before using it:
+
+- `forward_returns` is the next-day return of SPY's dividend-adjusted close; this reproduces the
+  column to 1e-6 on 98% of the last 500 train rows.
+- `risk_free_rate` is the 13-week T-bill yield (`^IRX`) / 100 / 252 on the same day; this
+  reproduces it to 1e-9 on every matched row.
+- On the 180-row public test set, buy-and-hold scores 1.126 from train.csv and 1.116 from the
+  rebuild.
+
+Scored rows run from the first trading day after the 2025-12-15 submission deadline to the last
+data update before the final rerun. That last day was not published and mid-June was volatile,
+so the score depends on it:
+
+| Last scored row | 06-10 | 06-12 | 06-15 | 06-18 | 06-22 | 06-23 | 06-24 |
+|---|---|---|---|---|---|---|---|
+| Buy-and-hold | 1.090 | 1.398 | 1.299 | 1.181 | 0.953 | 0.941 | 0.956 |
+
+The most likely cutoff is 06-23, the last row whose forward return was known the day before the
+06-25 rerun (the rerun row in the table above uses the same rule for every month). On every
+cutoff the entry's 1.699 is ahead, by 1.2x to 1.8x. Across the six reruns it led buy-and-hold
+four times, most clearly in the down months (January, March), and trailed in April and May by
+0.08 and 0.01. Full output: [`results/live_baseline.md`](results/live_baseline.md).
 
 ### Walk-forward evaluation (this repo)
 
@@ -129,6 +161,8 @@ and thread counts has not been checked. `hull-timing summary` rebuilds `summary.
 `folds.csv` without retraining. The always-1.2x rows need no model; they were scored after the
 run with the same code (`evaluate.constant_rows`), which `make run` now includes. `make test`
 runs the synthetic-data tests in 10-25 s on one CPU thread; no data or network needed.
+`make live-baseline` downloads SPY and `^IRX` daily data from Yahoo Finance (a few seconds) and
+rewrites `results/live_baseline.md`; it needs `train.csv` for the reconstruction check.
 
 ## Layout
 
@@ -139,6 +173,7 @@ src/hull_timing/
   train.py      purged walk-forward folds, training loop with early stopping
   policy.py     probability -> 0..2x tiers; percentile calibration; tuned-threshold search
   metric.py     the competition's volatility-adjusted Sharpe
+  live.py       buy-and-hold on the live leaderboard window, rebuilt from public prices
   evaluate.py   per-fold scoring, shift-null test, 126-day window scores
   pipeline.py · cli.py · plot.py · config.py
 configs/        default.yaml, no_lags.yaml

@@ -1,4 +1,4 @@
-"""Command line entry point: `hull-timing run | summary | plot`."""
+"""Command line entry point: `hull-timing run | summary | plot | live-baseline`."""
 
 from __future__ import annotations
 
@@ -36,6 +36,12 @@ def main(argv: list[str] | None = None) -> None:
     plot.add_argument("--results", type=Path, default=Path("results"))
     plot.add_argument("--out", type=Path, default=Path("assets/walk_forward.png"))
 
+    live = sub.add_parser(
+        "live-baseline", help="buy-and-hold on the live leaderboard window (downloads prices)"
+    )
+    live.add_argument("--data", type=Path, default=Path("data"), help="folder with train.csv")
+    live.add_argument("--out", type=Path, default=Path("results/live_baseline.md"))
+
     args = ap.parse_args(argv)
     if args.cmd == "run":
         from .pipeline import run as run_pipeline
@@ -49,6 +55,10 @@ def main(argv: list[str] | None = None) -> None:
 
         plot_results(args.results, args.out)
         print(f"wrote {args.out}")
+    elif args.cmd == "live-baseline":
+        from .live import run as run_live
+
+        print(run_live(args.data, args.out), end="")
 
 
 if __name__ == "__main__":
